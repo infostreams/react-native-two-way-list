@@ -21,6 +21,7 @@ export default class extends Component<Props> {
   _listRef: any;
   _onStartAlreadyCalled: boolean = false; // called already for a drag/momentum
   _startThreshold: number = 0; // px from top onStartReached will be called
+  _timer: any;
 
   componentDidUpdate = (prevProps: Props, prevState: any) => {
     const oldSections = prevProps.sections;
@@ -37,13 +38,19 @@ export default class extends Component<Props> {
           this,
           '_listRef._wrapperListRef._listRef._scrollMetrics.offset',
         );
-
-        this._listRef.scrollToLocation({
-          sectionIndex: numAdded,
-          itemIndex: 0,
-          viewOffset: 0, // get the user back to where they were
-          animated: false,
-        });
+        
+        if (this._timer) {
+          clearTimeout(this._timer)
+        }
+        
+        this._timer = setTimeout(() => {
+          this._listRef.scrollToLocation({
+            sectionIndex: numAdded,
+            itemIndex: 0,
+            viewOffset: 40, // TODO: Make configurable - it's the sectionlist header height
+            animated: true,
+          });
+        }, 800)
       }
     }
   };
